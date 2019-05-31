@@ -14,7 +14,14 @@ internal class MyViewModelTest {
     @get:Rule
     val rule: TestRule = InstantTaskExecutorRule()
 
-    private val sut: MyViewModel = MyViewModel()
+    private val routerMock: Router = mockk(relaxed = true)
+    private lateinit var sut: MyViewModel
+
+    @Before
+    fun init() {
+        clearAllMocks()
+        sut = MyViewModel(routerMock)
+    }
 
     @Test
     fun `update the counter result text whenever count is called`() {
@@ -29,7 +36,11 @@ internal class MyViewModelTest {
 
     @Test
     fun `navigate to result view when counter limit is reached`() {
-        TODO()
+        val clickedTimes = 11
+        count(times = clickedTimes)
+        verify {
+            routerMock.navigateToResultActivity()
+        }
     }
 
     private fun count(times: Int) {
